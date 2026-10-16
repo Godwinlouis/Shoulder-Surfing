@@ -1,0 +1,980 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SHADOW SHIELD | Flash Recall Arena</title>
+
+<style>
+:root {
+  --bg: #090b18;
+  --panel: #14182b;
+  --purple: #9b7bff;
+  --cyan: #42e8e0;
+  --white: #f4f4ff;
+  --muted: #a5aac5;
+  --green: #54e6a0;
+  --red: #ff7188;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  background:
+    radial-gradient(circle at 15% 10%, #29204f 0, transparent 32%),
+    radial-gradient(circle at 90% 80%, #102e42 0, transparent 30%),
+    var(--bg);
+  color: var(--white);
+  min-height: 100vh;
+}
+
+header {
+  padding: 24px 16px;
+  text-align: center;
+  border-bottom: 1px solid #333653;
+  background: #0b0d1be8;
+}
+
+.logo {
+  font-size: 13px;
+  letter-spacing: 4px;
+  color: var(--cyan);
+  font-weight: bold;
+}
+
+header h1 {
+  margin: 12px 0 6px;
+  font-size: clamp(27px, 5vw, 44px);
+  letter-spacing: 2px;
+}
+
+header h1 span { color: var(--purple); }
+
+header p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.container {
+  width: min(950px, 94%);
+  margin: 24px auto 45px;
+}
+
+.panel {
+  background: #14182bf2;
+  border: 1px solid #353958;
+  border-radius: 18px;
+  padding: 22px;
+  margin-bottom: 18px;
+  box-shadow: 0 12px 35px #0003;
+}
+
+h2 { margin-top: 0; font-size: 21px; }
+h3 { margin-top: 0; }
+
+label {
+  display: block;
+  color: var(--muted);
+  font-size: 13px;
+  margin: 12px 0 7px;
+}
+
+input, select {
+  width: 100%;
+  padding: 13px;
+  border-radius: 9px;
+  border: 1px solid #444968;
+  background: #0b0e1d;
+  color: white;
+  font-size: 16px;
+  outline: none;
+}
+
+input:focus, select:focus {
+  border-color: var(--purple);
+}
+
+.profile-grid, .stats, .choice-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 13px;
+}
+
+.stats {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin-bottom: 18px;
+}
+
+.stat {
+  background: #0d1020;
+  border: 1px solid #343853;
+  border-radius: 12px;
+  text-align: center;
+  padding: 14px 7px;
+}
+
+.stat strong {
+  display: block;
+  font-size: 25px;
+  color: var(--cyan);
+  margin-bottom: 5px;
+}
+
+.stat span {
+  font-size: 11px;
+  color: var(--muted);
+  letter-spacing: 1px;
+}
+
+button {
+  border: 0;
+  border-radius: 10px;
+  padding: 13px 17px;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: transform .15s, opacity .15s;
+}
+
+button:hover { transform: translateY(-1px); }
+button:disabled { opacity: .45; cursor: not-allowed; transform: none; }
+
+.primary {
+  color: #090b18;
+  background: linear-gradient(100deg, var(--cyan), #a9fff0);
+}
+
+.secondary {
+  color: white;
+  background: #282d48;
+  border: 1px solid #444968;
+}
+
+.purple {
+  color: white;
+  background: linear-gradient(100deg, #7955ee, #ae8cff);
+}
+
+.danger {
+  color: white;
+  background: #60283a;
+  border: 1px solid #a64b67;
+}
+
+.full { width: 100%; margin-top: 15px; }
+
+.hidden { display: none !important; }
+
+.hint {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.tag {
+  display: inline-block;
+  color: var(--cyan);
+  border: 1px solid #286a70;
+  background: #10282f;
+  border-radius: 30px;
+  padding: 6px 10px;
+  font-size: 11px;
+  letter-spacing: 1px;
+  font-weight: bold;
+}
+
+.progress-track {
+  width: 100%;
+  height: 7px;
+  background: #292d45;
+  border-radius: 10px;
+  overflow: hidden;
+  margin: 12px 0 20px;
+}
+
+.progress-bar {
+  width: 0%;
+  height: 100%;
+  background: linear-gradient(90deg, var(--purple), var(--cyan));
+  transition: width .3s;
+}
+
+.game-screen {
+  min-height: 205px;
+  border: 1px solid #3b4161;
+  border-radius: 15px;
+  background:
+    radial-gradient(circle, #222849, #0b0e1d 70%);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 22px 12px;
+  text-align: center;
+  margin: 17px 0;
+}
+
+.game-screen .small-label {
+  font-size: 11px;
+  letter-spacing: 3px;
+  color: var(--cyan);
+  margin-bottom: 20px;
+}
+
+#flashCode {
+  font-family: "Courier New", monospace;
+  font-size: clamp(42px, 10vw, 72px);
+  letter-spacing: 9px;
+  font-weight: bold;
+  color: white;
+  text-shadow: 0 0 22px #8d78ff;
+  min-height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#screenMessage {
+  color: var(--muted);
+  font-size: 13px;
+  margin-top: 12px;
+}
+
+#answerInput {
+  text-align: center;
+  font-family: "Courier New", monospace;
+  font-size: 25px;
+  letter-spacing: 7px;
+}
+
+.actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.actions button { flex: 1; }
+
+.feedback {
+  padding: 13px;
+  border-radius: 10px;
+  background: #0c1020;
+  border: 1px solid #343853;
+  margin-top: 15px;
+  line-height: 1.6;
+  font-size: 14px;
+  min-height: 45px;
+}
+
+.good { color: var(--green); }
+.bad { color: var(--red); }
+
+.shield-box {
+  border: 1px solid #594c8e;
+  background: #211b3c;
+  padding: 15px;
+  border-radius: 12px;
+  margin: 12px 0;
+}
+
+.choice-grid button {
+  min-height: 65px;
+  line-height: 1.5;
+}
+
+.choice-grid button.selected {
+  outline: 2px solid var(--cyan);
+  background: #16434a;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin-top: 14px;
+  font-size: 13px;
+}
+
+th, td {
+  padding: 11px 8px;
+  border-bottom: 1px solid #343853;
+  text-align: left;
+}
+
+th { color: var(--cyan); }
+td { color: #e0e3f5; }
+
+.table-wrap { overflow-x: auto; }
+
+footer {
+  text-align: center;
+  color: var(--muted);
+  font-size: 12px;
+  padding: 20px;
+}
+
+@media (max-width: 600px) {
+  .panel { padding: 16px; }
+  .stats { grid-template-columns: repeat(2, 1fr); }
+  .profile-grid { grid-template-columns: 1fr; }
+  .choice-grid { grid-template-columns: 1fr; }
+  #flashCode { letter-spacing: 5px; }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="logo">SIMATS ENGINEERING</div>
+  <h1>SHADOW <span>SHIELD</span></h1>
+  <p>ETHICAL HACKING • FLASH RECALL ARENA</p>
+</header>
+
+<main class="container">
+
+  <!-- STUDENT REGISTRATION -->
+  <section class="panel" id="setupPanel">
+    <span class="tag">MISSION BRIEFING</span>
+    <h2 style="margin-top:15px">Can You Beat the Shoulder Surfer?</h2>
+    <p class="hint">
+      A training code will appear briefly on the screen. Memorize it and
+      enter it after it disappears. Real shoulder surfers may try to observe
+      what you type. Learn to protect your screen and your privacy.
+    </p>
+
+    <div class="profile-grid">
+      <div>
+        <label for="studentName">Student Name</label>
+        <input id="studentName" type="text" placeholder="Enter your name"
+               maxlength="60">
+      </div>
+      <div>
+        <label for="registerNo">Register Number</label>
+        <input id="registerNo" type="text" placeholder="Enter register number"
+               maxlength="30">
+      </div>
+    </div>
+
+    <label for="difficulty">Select Difficulty</label>
+    <select id="difficulty">
+      <option value="easy">EASY — 4 digits, 1.5 seconds</option>
+      <option value="medium">MEDIUM — 4 digits, 1 second</option>
+      <option value="extreme">EXTREME — 5 digits, 0.5 seconds</option>
+    </select>
+
+    <div class="shield-box">
+      <strong>Mission Rules</strong>
+      <p class="hint">
+        1. Memorize the digits before they disappear.<br>
+        2. Enter the exact digits before the timer ends.<br>
+        3. Every third round is a screen-privacy challenge.<br>
+        4. Use only the fictional codes generated by this game.
+      </p>
+    </div>
+
+    <button class="primary full" id="startButton" type="button">
+      START MISSION →
+    </button>
+  </section>
+
+  <!-- GAME -->
+  <section class="hidden" id="gamePanel">
+
+    <div class="stats">
+      <div class="stat">
+        <strong id="score">0</strong>
+        <span>SCORE</span>
+      </div>
+      <div class="stat">
+        <strong id="roundStat">0/10</strong>
+        <span>ROUND</span>
+      </div>
+      <div class="stat">
+        <strong id="streak">0</strong>
+        <span>STREAK</span>
+      </div>
+      <div class="stat">
+        <strong id="accuracy">0%</strong>
+        <span>ACCURACY</span>
+      </div>
+    </div>
+
+    <section class="panel">
+      <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap">
+        <span class="tag" id="roundType">FLASH RECALL</span>
+        <span class="tag" id="difficultyTag">EASY</span>
+      </div>
+
+      <h2 style="margin-top:18px" id="roundTitle">Round 1</h2>
+      <p class="hint" id="roundInstructions">
+        Get ready. Memorize the code when it appears.
+      </p>
+
+      <div class="progress-track">
+        <div class="progress-bar" id="progressBar"></div>
+      </div>
+
+      <!-- SCREEN PRIVACY CHALLENGE -->
+      <div id="shieldChallenge" class="shield-box hidden">
+        <h3>🛡️ Shield Round</h3>
+        <p class="hint">
+          Someone is standing close enough to observe your screen.
+          What should you do before entering a private code?
+        </p>
+
+        <div class="choice-grid">
+          <button type="button" class="secondary shield-choice"
+                  data-choice="safe">
+            Protect the screen and use a private angle
+          </button>
+          <button type="button" class="secondary shield-choice"
+                  data-choice="unsafe">
+            Leave the screen exposed
+          </button>
+        </div>
+        <p class="hint" id="shieldFeedback"></p>
+      </div>
+
+      <div class="game-screen">
+        <div class="small-label" id="screenLabel">READY PLAYER</div>
+        <div id="flashCode">••••</div>
+        <div id="screenMessage">Press the button when you are ready.</div>
+      </div>
+
+      <div id="answerArea" class="hidden">
+        <label for="answerInput">Enter the code you remember</label>
+        <input id="answerInput" type="text" inputmode="numeric"
+               autocomplete="off" maxlength="5"
+               placeholder="Enter digits here">
+
+        <div class="actions" style="margin-top:12px">
+          <button class="primary" id="submitButton" type="button">
+            SUBMIT CODE
+          </button>
+          <button class="secondary" id="skipButton" type="button">
+            SKIP ROUND
+          </button>
+        </div>
+      </div>
+
+      <button class="primary full" id="flashButton" type="button">
+        ⚡ FLASH CODE
+      </button>
+
+      <div class="feedback" id="feedback" aria-live="polite">
+        Your mission feedback will appear here.
+      </div>
+    </section>
+
+    <section class="panel">
+      <h3>Round History</h3>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Round</th>
+              <th>Type</th>
+              <th>Result</th>
+              <th>Points</th>
+            </tr>
+          </thead>
+          <tbody id="historyBody">
+            <tr><td colspan="4">No rounds completed yet.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </section>
+
+  <!-- FINAL REPORT -->
+  <section class="panel hidden" id="reportPanel">
+    <span class="tag">MISSION COMPLETE</span>
+    <h2 style="margin-top:15px">Your Flash Recall Report</h2>
+    <p id="reportStudent" class="hint"></p>
+
+    <div class="stats">
+      <div class="stat">
+        <strong id="finalScore">0</strong>
+        <span>TOTAL SCORE</span>
+      </div>
+      <div class="stat">
+        <strong id="finalAccuracy">0%</strong>
+        <span>RECALL ACCURACY</span>
+      </div>
+      <div class="stat">
+        <strong id="finalCorrect">0/10</strong>
+        <span>CODES RECALLED</span>
+      </div>
+      <div class="stat">
+        <strong id="finalRank">ROOKIE</strong>
+        <span>RANK</span>
+      </div>
+    </div>
+
+    <h3>Security Lessons</h3>
+    <ul class="hint" style="line-height:1.9">
+      <li>Shield your screen when entering PINs or passwords.</li>
+      <li>Position your device so nearby people cannot easily observe it.</li>
+      <li>Use a privacy screen protector where appropriate.</li>
+      <li>Never enter real passwords during classroom demonstrations.</li>
+      <li>Use device locking and multi-factor authentication where possible.</li>
+    </ul>
+
+    <div class="actions">
+      <button class="primary" type="button" id="printButton">
+        PRINT / SAVE AS PDF
+      </button>
+      <button class="purple" type="button" id="restartButton">
+        PLAY AGAIN
+      </button>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  SIMATS Engineering • Ethical Hacking Awareness Activity<br>
+  Educational simulation only. No real credentials are collected or transmitted.
+</footer>
+
+<script>
+"use strict";
+
+const TOTAL_ROUNDS = 10;
+
+const settings = {
+  easy:    { label: "EASY",    length: 4, flashMs: 1500, answerMs: 10000 },
+  medium:  { label: "MEDIUM",  length: 4, flashMs: 1000, answerMs: 8000 },
+  extreme: { label: "EXTREME", length: 5, flashMs: 500,  answerMs: 7000 }
+};
+
+let studentName = "";
+let registerNo = "";
+let difficulty = "easy";
+
+let roundNo = 0;
+let score = 0;
+let streak = 0;
+let correctCount = 0;
+let attemptedCount = 0;
+let currentCode = "";
+let currentRoundPoints = 0;
+let shieldChoice = "";
+let phase = "setup";
+let history = [];
+
+let flashTimer = null;
+let answerTimer = null;
+
+const $ = id => document.getElementById(id);
+
+function randomDigits(length) {
+  // Generates a fictional numeric training code, never a real password.
+  let digits = "";
+  for (let i = 0; i < length; i++) {
+    digits += Math.floor(Math.random() * 10);
+  }
+  return digits;
+}
+
+function clearTimers() {
+  clearTimeout(flashTimer);
+  clearTimeout(answerTimer);
+  flashTimer = null;
+  answerTimer = null;
+}
+
+function setFeedback(message, type = "") {
+  $("feedback").className = "feedback";
+  if (type) $("feedback").classList.add(type);
+  $("feedback").textContent = message;
+}
+
+function updateStats() {
+  $("score").textContent = score;
+  $("roundStat").textContent = roundNo + "/" + TOTAL_ROUNDS;
+  $("streak").textContent = streak;
+
+  const accuracy = attemptedCount
+    ? Math.round((correctCount / attemptedCount) * 100)
+    : 0;
+
+  $("accuracy").textContent = accuracy + "%";
+  $("progressBar").style.width =
+    Math.min(100, (roundNo / TOTAL_ROUNDS) * 100) + "%";
+}
+
+function addHistory(type, result, points) {
+  history.push({
+    round: roundNo,
+    type,
+    result,
+    points
+  });
+
+  const body = $("historyBody");
+  body.innerHTML = "";
+
+  history.forEach(item => {
+    const row = document.createElement("tr");
+
+    [item.round, item.type, item.result, "+" + item.points]
+      .forEach(value => {
+        const cell = document.createElement("td");
+        cell.textContent = value;
+        row.appendChild(cell);
+      });
+
+    body.appendChild(row);
+  });
+}
+
+function startMission() {
+  studentName = $("studentName").value.trim();
+  registerNo = $("registerNo").value.trim();
+  difficulty = $("difficulty").value;
+
+  if (!studentName || !registerNo) {
+    alert("Please enter your name and register number.");
+    return;
+  }
+
+  roundNo = 0;
+  score = 0;
+  streak = 0;
+  correctCount = 0;
+  attemptedCount = 0;
+  history = [];
+  phase = "playing";
+
+  $("setupPanel").classList.add("hidden");
+  $("reportPanel").classList.add("hidden");
+  $("gamePanel").classList.remove("hidden");
+
+  $("difficultyTag").textContent = settings[difficulty].label;
+  $("historyBody").innerHTML =
+    '<tr><td colspan="4">No rounds completed yet.</td></tr>';
+
+  updateStats();
+  prepareRound();
+}
+
+function prepareRound() {
+  clearTimers();
+
+  if (roundNo >= TOTAL_ROUNDS) {
+    finishMission();
+    return;
+  }
+
+  phase = "ready";
+  currentCode = "";
+  currentRoundPoints = 0;
+  shieldChoice = "";
+
+  const isShieldRound = (roundNo + 1) % 3 === 0;
+
+  $("roundTitle").textContent = "Round " + (roundNo + 1);
+  $("roundType").textContent =
+    isShieldRound ? "SHIELD + FLASH ROUND" : "FLASH RECALL";
+
+  $("roundInstructions").textContent = isShieldRound
+    ? "Choose how to protect your screen, then memorize the digits."
+    : "Press FLASH CODE, memorize the digits, and type them after they disappear.";
+
+  $("shieldChallenge").classList.toggle("hidden", !isShieldRound);
+  $("shieldFeedback").textContent = "";
+
+  document.querySelectorAll(".shield-choice").forEach(button => {
+    button.classList.remove("selected");
+    button.disabled = !isShieldRound;
+  });
+
+  $("answerArea").classList.add("hidden");
+  $("answerInput").value = "";
+  $("answerInput").disabled = false;
+  $("flashButton").classList.remove("hidden");
+  $("flashButton").disabled = false;
+  $("flashCode").textContent = "••••";
+  $("screenLabel").textContent = "READY PLAYER";
+  $("screenMessage").textContent = "Press FLASH CODE when you are ready.";
+
+  $("submitButton").disabled = false;
+  $("skipButton").disabled = false;
+
+  setFeedback(
+    isShieldRound
+      ? "First select a screen-safety choice, then start the flash."
+      : "Get ready. The digits will disappear quickly."
+  );
+
+  updateStats();
+}
+
+function selectShield(choice) {
+  if (phase !== "ready") return;
+  if ((roundNo + 1) % 3 !== 0) return;
+
+  shieldChoice = choice;
+
+  document.querySelectorAll(".shield-choice").forEach(button => {
+    button.classList.toggle(
+      "selected",
+      button.dataset.choice === choice
+    );
+  });
+
+  if (choice === "safe") {
+    $("shieldFeedback").textContent =
+      "Good choice! Protecting your screen helps reduce shoulder surfing.";
+  } else {
+    $("shieldFeedback").textContent =
+      "Risky choice! An exposed screen makes observation easier.";
+  }
+}
+
+function beginFlash() {
+  if (phase !== "ready") return;
+
+  const isShieldRound = (roundNo + 1) % 3 === 0;
+
+  if (isShieldRound && !shieldChoice) {
+    setFeedback("Choose one screen-safety option before flashing.", "bad");
+    return;
+  }
+
+  phase = "flashing";
+
+  const config = settings[difficulty];
+  currentCode = randomDigits(config.length);
+
+  $("flashButton").disabled = true;
+  $("flashButton").textContent = "CODE FLASHING...";
+  $("screenLabel").textContent = "MEMORIZE NOW";
+  $("screenMessage").textContent =
+    "Remember every digit. The code will disappear.";
+
+  $("flashCode").textContent = currentCode;
+  $("flashCode").style.visibility = "visible";
+
+  flashTimer = setTimeout(() => {
+    $("flashCode").textContent = "— — — —";
+    $("screenLabel").textContent = "CODE HIDDEN";
+    $("screenMessage").textContent = "Enter the digits from memory.";
+    $("flashButton").classList.add("hidden");
+    $("answerArea").classList.remove("hidden");
+
+    phase = "answering";
+    $("answerInput").focus();
+
+    answerTimer = setTimeout(() => {
+      if (phase === "answering") {
+        resolveAnswer($("answerInput").value, true);
+      }
+    }, config.answerMs);
+
+  }, config.flashMs);
+}
+
+function resolveAnswer(value, timedOut = false) {
+  if (phase !== "answering") return;
+
+  clearTimers();
+  phase = "review";
+  attemptedCount++;
+
+  const entered = String(value).trim();
+  const isCorrect = entered === currentCode && !timedOut;
+
+  let points = 0;
+
+  if (isCorrect) {
+    correctCount++;
+    streak++;
+    points = 10 + Math.min((streak - 1) * 2, 10);
+    setFeedback(
+      "✓ Correct! You recalled the digits. +" + points + " points.",
+      "good"
+    );
+    $("screenLabel").textContent = "RECALL SUCCESS";
+  } else {
+    streak = 0;
+    setFeedback(
+      timedOut
+        ? "Time is up! The training code was " + currentCode + "."
+        : "Not quite. The training code was " + currentCode + ".",
+      "bad"
+    );
+    $("screenLabel").textContent = "RECALL FAILED";
+  }
+
+  const isShieldRound = (roundNo + 1) % 3 === 0;
+
+  if (isShieldRound) {
+    if (shieldChoice === "safe") {
+      points += 2;
+      $("shieldFeedback").textContent =
+        "Correct security decision: +2 bonus points.";
+    } else {
+      $("shieldFeedback").textContent =
+        "Remember: protect your screen and use a private viewing angle.";
+    }
+  }
+
+  currentRoundPoints = points;
+  score += points;
+
+  addHistory(
+    isShieldRound ? "Shield" : "Recall",
+    isCorrect ? "Correct" : "Incorrect",
+    points
+  );
+
+  $("answerArea").classList.add("hidden");
+  $("flashButton").classList.add("hidden");
+  $("progressBar").style.width =
+    ((roundNo + 1) / TOTAL_ROUNDS) * 100 + "%";
+
+  updateStats();
+
+  $("skipButton").disabled = true;
+  $("submitButton").disabled = true;
+
+  $("roundInstructions").textContent =
+    "Round complete. Review the result, then continue.";
+
+  const nextButton = document.createElement("button");
+  nextButton.type = "button";
+  nextButton.id = "nextRoundButton";
+  nextButton.className = "primary full";
+  nextButton.textContent =
+    roundNo + 1 >= TOTAL_ROUNDS ? "VIEW FINAL REPORT →" : "NEXT ROUND →";
+
+  const oldNext = $("nextRoundButton");
+  if (oldNext) oldNext.remove();
+
+  $("feedback").after(nextButton);
+
+  nextButton.addEventListener("click", () => {
+    nextButton.remove();
+    roundNo++;
+    prepareRound();
+  }, { once: true });
+}
+
+function skipRound() {
+  if (phase !== "answering") return;
+  resolveAnswer("", true);
+}
+
+function finishMission() {
+  clearTimers();
+  phase = "finished";
+
+  $("gamePanel").classList.add("hidden");
+  $("reportPanel").classList.remove("hidden");
+
+  const accuracy = attemptedCount
+    ? Math.round((correctCount / attemptedCount) * 100)
+    : 0;
+
+  let rank = "ROOKIE";
+  if (accuracy >= 90) rank = "SHIELD MASTER";
+  else if (accuracy >= 70) rank = "CODE HAWK";
+  else if (accuracy >= 50) rank = "QUICK THINKER";
+
+  $("reportStudent").textContent =
+    "Student: " + studentName +
+    " | Register Number: " + registerNo +
+    " | Difficulty: " + settings[difficulty].label;
+
+  $("finalScore").textContent = score;
+  $("finalAccuracy").textContent = accuracy + "%";
+  $("finalCorrect").textContent = correctCount + "/" + TOTAL_ROUNDS;
+  $("finalRank").textContent = rank;
+}
+
+function restartMission() {
+  clearTimers();
+  phase = "setup";
+
+  $("gamePanel").classList.add("hidden");
+  $("reportPanel").classList.add("hidden");
+  $("setupPanel").classList.remove("hidden");
+
+  $("startButton").focus();
+}
+
+$("startButton").addEventListener("click", startMission);
+$("flashButton").addEventListener("click", beginFlash);
+$("submitButton").addEventListener("click", () => {
+  resolveAnswer($("answerInput").value, false);
+});
+$("skipButton").addEventListener("click", skipRound);
+
+$("answerInput").addEventListener("input", () => {
+  // Allow digits only and limit input to the selected code length.
+  $("answerInput").value = $("answerInput").value
+    .replace(/\D/g, "")
+    .slice(0, settings[difficulty].length);
+});
+
+$("answerInput").addEventListener("keydown", event => {
+  if (event.key === "Enter") {
+    resolveAnswer($("answerInput").value, false);
+  }
+});
+
+document.querySelectorAll(".shield-choice").forEach(button => {
+  button.addEventListener("click", () => {
+    selectShield(button.dataset.choice);
+  });
+});
+
+$("printButton").addEventListener("click", () => window.print());
+$("restartButton").addEventListener("click", restartMission);
+</script>
+
+<style>
+@media print {
+  body {
+    background: white !important;
+    color: black !important;
+  }
+
+  header, footer, #setupPanel, #gamePanel,
+  #printButton, #restartButton {
+    display: none !important;
+  }
+
+  #reportPanel {
+    display: block !important;
+    background: white !important;
+    color: black !important;
+    border: 0 !important;
+    box-shadow: none !important;
+  }
+
+  #reportPanel .hint,
+  #reportPanel .stat span,
+  #reportStudent {
+    color: #333 !important;
+  }
+
+  #reportPanel .stat {
+    background: white !important;
+    border: 1px solid #aaa !important;
+  }
+
+  #reportPanel .stat strong {
+    color: black !important;
+  }
+}
+</style>
+
+</body>
+</html>
